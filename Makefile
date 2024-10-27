@@ -33,15 +33,16 @@ migrate:
 
 # Run the FastHTML application
 run:
-	python ${{ project_name }}/main.py
+	python project/main.py
 
 # Run all tests
 test:
-	pytest ${{ project_name }}/tests/ -v
+	pytest project/tests/ -v
+
 
 # Run tests with coverage report
 test-coverage:
-	pytest ${{ project_name }}/tests/ --cov=app --cov-report=html --cov-report=term-missing
+	pytest project/tests/ --cov=app --cov-report=html --cov-report=term-missing
 
 # Initialize uv environment and activate it
 init:
