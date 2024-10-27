@@ -75,7 +75,7 @@ github-init:
 	@git add .
 	@git commit -m "Initial commit" || ver > nul
 	@echo Creating GitHub repository...
-	@gh repo create $(REPO) --private --source=. --remote=origin || ver > nul
+	@"C:\Program Files\GitHub CLI\gh.exe" repo create $(REPO) --private --source=. --remote=origin || ver > nul
 	@echo Pushing to GitHub...
 	@git push -u origin main
 	@echo Repository successfully created and code pushed to GitHub!
