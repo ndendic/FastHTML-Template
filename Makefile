@@ -33,24 +33,41 @@ migrate:
 
 # Run the FastHTML application
 run:
-	python project/main.py
+	python ${{ project_name }}/main.py
 
 # Run all tests
 test:
-	pytest project/tests/ -v
-
+	pytest ${{ project_name }}/tests/ -v
 
 # Run tests with coverage report
 test-coverage:
-	pytest project/tests/ --cov=app --cov-report=html --cov-report=term-missing
+	pytest ${{ project_name }}/tests/ --cov=app --cov-report=html --cov-report=term-missing
 
 # Initialize uv environment and activate it
 init:
-	@echo "Creating new uv environment..."
-	@uv venv .venv
-	@echo "Installing dependencies from pyproject.toml..."
-	@. .venv/bin/activate && uv pip install -e .
-	@echo "Environment created and activated. Dependencies installed."
+	@echo "Checking if uv is installed..."
+	@if command -v uv >/dev/null 2>&1; then \
+		echo "Creating new uv environment..."; \
+		uv venv .venv; \
+		echo "Installing dependencies from pyproject.toml..."; \
+		. .venv/bin/activate && uv pip install -e .; \
+		echo "Environment created and activated. Dependencies installed."; \
+	else \
+		echo "uv is not installed. Would you like to:"; \
+		echo "1) Install uv (recommended)"; \
+		echo "2) Continue with standard venv"; \
+		read -p "Enter choice (1/2): " choice; \
+		if [ "$$choice" = "1" ]; then \
+			curl -LsSf https://astral.sh/uv/install.sh | sh; \
+			echo "uv installed. Creating new environment..."; \
+			uv venv .venv; \
+			. .venv/bin/activate && uv pip install -e .; \
+		else \
+			echo "Creating standard venv environment..."; \
+			python -m venv .venv; \
+			. .venv/bin/activate && pip install -e .; \
+		fi; \
+	fi
 
 # Clean up cache and coverage files
 clean:
@@ -74,11 +91,23 @@ github-init:
 	)
 	@git add .
 	@git commit -m "Initial commit" || ver > nul
-	@echo Creating GitHub repository...
-	@"C:\Program Files\GitHub CLI\gh.exe" repo create $(REPO) --private --source=. --remote=origin || ver > nul
+	@echo "Checking current branch name..."
+	@for /f "tokens=* USEBACKQ" %%F in (`git rev-parse --abbrev-ref HEAD`) do @( \
+		if not "%%F"=="main" ( \
+			echo Current branch is %%F, renaming to main... && \
+			git branch -M main \
+		) \
+	)
+	@echo "Checking if GitHub CLI is installed..."
+	@where gh >nul 2>&1 && ( \
+		echo Creating GitHub repository... && \
+		"C:\Program Files\GitHub CLI\gh.exe" repo create $(REPO) --private --source=. --remote=origin || ver > nul \
+	) || ( \
+		echo "GitHub CLI (gh) is not installed. Skipping repository creation..." \
+	)
 	@echo Pushing to GitHub...
 	@git push -u origin main
-	@echo Repository successfully created and code pushed to GitHub!
+	@echo Repository successfully pushed to GitHub!
 
 # Declare phony targets
 .PHONY: all new-page migrations migrate run test test-auth test-coverage clean init github-init
