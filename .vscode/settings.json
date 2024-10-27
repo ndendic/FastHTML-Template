@@ -1,0 +1,22 @@
+{
+    "makefile.configureOnOpen": false,
+    // "python.languageServer": "None",
+    "ruff.lint.args": [
+        "--ignore=F405,F403,F402"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+                
+        "reportUnusedVariable": "none",
+        "reportGeneralTypeIssues": "none",
+        "reportArgumentType": false,
+        "reportCallIssue": false, 
+        "reportOptionalCall": false,
+        "reportAttributeAccessIssue": false,
+        "reportOptionalMemberAccess": false,
+        "reportUnboundVariable": "none",
+        "reportWildcardImportFromLibrary": "none",
+        "reportAssignmentType": "none",
+        "reportReturnType": "none",
+
+    }
+}
