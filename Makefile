@@ -62,19 +62,23 @@ clean:
 
 # Initialize and push to GitHub
 github-init:
-	@if "$(REPO)" == "" ( \
-		echo "Error: REPO is not set. Usage: make github-init REPO=repository-name" & \
-		exit 1 \
+	@if not defined REPO ( \
+		echo Error: REPO is not set. Usage: make github-init REPO=repository-name && \
+		exit /b 1 \
 	)
-	@echo "Initializing Git repository..."
-	@git init
+	@if not exist .git\ ( \
+		echo Initializing Git repository... && \
+		git init \
+	) else ( \
+		echo Git repository already initialized, continuing... \
+	)
 	@git add .
-	@git commit -m "Initial commit"
-	@echo "Creating GitHub repository..."
-	@gh repo create $(REPO) --private --source=. --remote=origin
-	@echo "Pushing to GitHub..."
+	@git commit -m "Initial commit" || ver > nul
+	@echo Creating GitHub repository...
+	@gh repo create $(REPO) --private --source=. --remote=origin || ver > nul
+	@echo Pushing to GitHub...
 	@git push -u origin main
-	@echo "Repository successfully created and code pushed to GitHub!"
+	@echo Repository successfully created and code pushed to GitHub!
 
 # Declare phony targets
 .PHONY: all new-page migrations migrate run test test-auth test-coverage clean init github-init
