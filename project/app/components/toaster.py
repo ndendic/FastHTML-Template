@@ -8,7 +8,7 @@ tcid = "fh-toast-container"
 sk = "toasts"
 toast_css = """
 .fh-toast-container {
-    position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;
+    position: fixed; top: 20px; left: 85%; transform: translateX(-50%); z-index: 1000;
     display: flex; flex-direction: column; align-items: center; width: 100%;
     pointer-events: none; opacity: 0; transition: opacity 0.3s ease-in-out;
 }
@@ -52,6 +52,7 @@ def add_custom_toast(sess, message, typ="info"):
     ), '`typ` not in ("info", "success", "warning", "error")'
     sess.setdefault(sk, []).append((message, typ))
 
+
 def toast(typ: str, msg: str) -> Div:
     return Div(
         toast_icon(typ),
@@ -75,15 +76,16 @@ def toast(typ: str, msg: str) -> Div:
             type="button",
             data_dismiss_target=f"#toast-{typ}",
             aria_label="Close",
-            cls="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700",
+            cls="ms-auto -mx-1.5 -my-1.5 rounded-lg focus:ring-2 p-1.5 inline-flex items-center justify-center h-8 w-8",
         ),
         id=f"toast-{typ}",
         role="alert",
-        cls="flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 dark:bg-gray-800",
+        cls="flex items-center bg-background w-full max-w-xs p-4 mb-4 rounded-lg shadow",
     )
 
+
 def render_toasts(sess):
-    toasts = [toast(typ,msg) for msg, typ in sess.pop(sk, [])]
+    toasts = [toast(typ, msg) for msg, typ in sess.pop(sk, [])]
     return Div(Div(*toasts, cls="fh-toast-container"), hx_swap_oob="afterbegin:body")
 
 
@@ -99,7 +101,8 @@ def setup_custom_toasts(app):
 
 def toast_icon(typ: str) -> Div:
     if (typ == "info") or (typ == "success"):
-        return Div(
+        return (
+            Div(
                 Svg(
                     Path(
                         d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"
@@ -113,6 +116,7 @@ def toast_icon(typ: str) -> Div:
                 Span("Check icon", cls="sr-only"),
                 cls="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200",
             ),
+        )
     elif typ == "error":
         return Div(
             Svg(

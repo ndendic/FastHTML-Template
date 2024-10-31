@@ -1,10 +1,8 @@
 from fasthtml.common import *
-
-# from components import Navbar
-from fasthtml.common import *
 from fh_frankenui.core import *
 from fh_frankenui import *
-from .navbar import Navbar
+from ...components.application.navbar import top_nav
+from ...components.landing.navbar import Navbar
 
 
 def page_template(title="FastSaas"):
@@ -32,7 +30,7 @@ def app_template(title="FastSaas"):
         def wrapper(request, *args, **kwargs):
             content = func(request)
             return Title(title), Body(
-                Navbar(),
+                Div(cls="border-b border-border px-4")(top_nav),
                 Main(
                     cls="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
                 )(  # Added py-12 for vertical padding

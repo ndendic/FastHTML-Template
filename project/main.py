@@ -3,8 +3,8 @@ import secrets
 from app.components.toaster import setup_custom_toasts
 from app.pages.err.page404 import custom_404_handler
 from fasthtml.common import *
-from route_collector import add_routes
 from fh_frankenui.core import *
+from route_collector import add_routes
 
 frankenui_headers = Theme.rose.headers()
 
@@ -13,7 +13,7 @@ login_redir = RedirectResponse("/auth/login", status_code=303)
 
 
 def user_auth_before(req, sess):
-    auth = req.scope["auth"] = sess.get("auth", None)
+    auth = req.scope["user"] = sess.get("user", None)
     if not auth:
         return login_redir
 
