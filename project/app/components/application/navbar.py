@@ -8,12 +8,12 @@ hotkeys = [
     ("Billing", "⌘B"),
     ("Settings", "⌘S"),
     ("New Team", ""),
-    ("Logout", ""),
+    ("Logout", "", "/auth/logout"),
 ]
 
 
-def NavSpacedLi(t, s):
-    return NavCloseLi(A(DivFullySpaced(P(t), P(s, cls=TextFont.muted_sm))))
+def NavSpacedLi(t, s, href="#"):
+    return Li(A(DivFullySpaced(P(t), P(s, cls=TextFont.muted_sm)), href=href))
 
 
 avatar_dropdown = Div(

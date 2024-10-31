@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from fasthtml.core import APIRouter
-from app.services.auth_service import AuthService
+from project.app.services.auth.auth_service import AuthService
 from fh_frankenui.core import *
 from starlette.responses import RedirectResponse
 from app.components.toaster import add_custom_toast

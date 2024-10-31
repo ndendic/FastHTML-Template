@@ -97,20 +97,36 @@ rt = APIRouter()
 @rt("/dashboard")
 @app_template("Dashboard")
 def page(request):
-    return Div(cls="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12")(
+    return Div(cls="space-y-4")(
         H2("Dashboard"),
         TabContainer(
-            Li(A("Overview")),
+            Li(A("Overview", cls="uk-active")),
             Li(A("Analytics")),
             Li(A("Reports")),
             Li(A("Notifications")),
+            uk_switcher="connect: #component-nav; animation: uk-animation-fade",
             alt=True,
         ),
-        top_info_row,
-        Grid(
-            Card(H3("Nothing to show here..."), cls="col-span-4"),
-            recent_sales,
-            gap=4,
-            cols=7,
+        Ul(id="component-nav", cls="uk-switcher")(
+            Li(
+                top_info_row,
+                Grid(
+                    Card(H3("Overview to show here..."), cls="col-span-4"),
+                    recent_sales,
+                    gap=4,
+                    cols=7,
+                ),
+                cls="space-y-4",
+            ),
+            Li(
+                top_info_row,
+                Grid(
+                    Card(H3("Analytics to show here..."), cls="col-span-4"),
+                    recent_sales,
+                    gap=4,
+                    cols=7,
+                ),
+                cls="space-y-4",
+            ),
         ),
     )
