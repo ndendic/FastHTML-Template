@@ -1,3 +1,3 @@
-from .landing.navbar import navbar
+from .landing.navbar import Navbar
 
 __all__ = ["navbar"]

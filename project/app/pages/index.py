@@ -3,7 +3,7 @@ from fasthtml.common import *
 from fasthtml.core import APIRouter
 from fh_frankenui.core import *
 from fh_frankenui import *
-from ..templates import page_template
+from .templates import page_template
 from fasthtml.components import Uk_theme_switcher
 
 rt = APIRouter()
