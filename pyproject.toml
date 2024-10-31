@@ -5,7 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "bcrypt>=4.2.0",
     "jupyterlab>=4.2.5",
     "notebook>=7.2.2",
+    "python-decouple>=3.8",
     "python-fasthtml>=0.8.0",
+    "sqlmodel>=0.0.22",
+    "supabase>=2.9.1",
 ]
