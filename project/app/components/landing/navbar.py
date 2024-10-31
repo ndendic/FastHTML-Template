@@ -34,7 +34,7 @@ def MobileDrawer():
                     Li(
                         A(
                             "Sign in",
-                            href="/login",
+                            href="/auth/login",
                             cls="flex items-center p-2 hover:bg-muted rounded-lg transition-colors",
                         )
                     ),
@@ -139,7 +139,7 @@ def Navbar():
                     theme_toggle(),
                     A(
                         "Sign in",
-                        href="/login",
+                        href="/auth/login",
                         cls="text-sm font-medium transition-colors hover:text-primary",
                     ),
                     Button(

@@ -1,5 +1,5 @@
 from app.components.toaster import add_custom_toast
-from app.services.auth_service import AuthService
+from project.app.services.auth.auth_service import AuthService
 from fasthtml.common import *
 from fasthtml.core import APIRouter
 from fh_frankenui.core import *
@@ -24,7 +24,9 @@ async def get(request):
     )
 
     right = Div(cls="col-span-2 flex flex-col p-8 lg:col-span-1")(
-        DivRAligned(A(Button("Login", cls=ButtonT.ghost, submit=False), href="/login")),
+        DivRAligned(
+            A(Button("Login", cls=ButtonT.ghost, submit=False), href="/auth/login")
+        ),
         DivCentered(cls="flex-1")(
             Div(cls=f"space-y-6 w-[350px]")(
                 Div(cls="flex flex-col space-y-2 text-center")(
