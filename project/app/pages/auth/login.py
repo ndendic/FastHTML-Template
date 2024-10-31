@@ -3,6 +3,7 @@ from fasthtml.core import APIRouter
 from app.services.auth_service import AuthService
 from fh_frankenui.core import *
 from starlette.responses import RedirectResponse
+from app.components.toaster import add_custom_toast
 
 rt = APIRouter()
 auth_service = AuthService()
@@ -92,9 +93,10 @@ async def post(request):
         password = form.get("password")
 
         if not email or not password:
-            return JSONResponse(
-                {"error": "Email and password are required"}, status=400
+            add_custom_toast(
+                request.session, "Username and password are required", "error"
             )
+            return RedirectResponse(url="#", status_code=303)
 
         user = await auth_service.login(request, email, password)
         if user:
@@ -102,6 +104,13 @@ async def post(request):
                 include={"email": True, "id": True}
             )
             return RedirectResponse(url="/dashboard", status_code=303)
-        return JSONResponse({"error": "Invalid credentials"}, status=401)
+        add_custom_toast(request.session, f"Wrong credentials for: {email}", "error")
+        return RedirectResponse(url="#", status_code=303)
     except Exception as e:
-        return JSONResponse({"error": str(e)}, status=500)
+        add_custom_toast(
+            request.session, f"Failed login attempt for user: {email}", "error"
+        )
+        return RedirectResponse(
+            url="#",
+            status_code=303,
+        )

@@ -31,6 +31,7 @@ from fh_frankenui.core import *
 
 from fasthtml.svg import *
 from fasthtml.core import APIRouter
+from ..templates import app_template
 
 
 # %% ../example_dashboard.ipynb
@@ -90,53 +91,13 @@ team_dropdown = UkSelect(
     Option(A("Create a Team")),
 )
 
-# %% ../example_dashboard.ipynb
-hotkeys = [
-    ("Profile", "⇧⌘P"),
-    ("Billing", "⌘B"),
-    ("Settings", "⌘S"),
-    ("New Team", ""),
-    ("Logout", ""),
-]
-
-
-def NavSpacedLi(t, s):
-    return NavCloseLi(A(DivFullySpaced(P(t), P(s, cls=TextFont.muted_sm))))
-
-
-avatar_dropdown = Div(
-    DiceBearAvatar("Alicia Koch", 8, 8),
-    DropDownNavContainer(
-        NavHeaderLi("sveltecult", NavSubtitle("leader@sveltecult.com")),
-        *[NavSpacedLi(*hk) for hk in hotkeys],
-    ),
-)
-
-# %% ../example_dashboard.ipynb
-top_nav = NavBarContainer(
-    NavBarLSide(
-        NavBarNav(
-            team_dropdown,
-            Li(A("Overview")),
-            Li(A("Customers")),
-            Li(A("Products")),
-            Li(A("Settings")),
-            cls="flex items-center",
-        )
-    ),
-    NavBarRSide(
-        NavBarNav(Input(placeholder="Search"), avatar_dropdown, cls="flex items-center")
-    ),
-)
-
-# %% ../example_dashboard.ipynb
 rt = APIRouter()
 
 
 @rt("/dashboard")
-def page():
+@app_template("Dashboard")
+def page(request):
     return Div(cls="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12")(
-        Div(cls="border-b border-border px-4")(top_nav),
         H2("Dashboard"),
         TabContainer(
             Li(A("Overview")),

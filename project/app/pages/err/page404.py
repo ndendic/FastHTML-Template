@@ -11,6 +11,7 @@ def custom_404_handler(request):
             Div(
                 H1(
                     "404",
+                    # cls="mb-4 text-7xl tracking-tight font-extrabold lg:text-9xl text-primary-600 dark:text-primary-500",
                 ),
                 P(
                     "Something's missing.",
