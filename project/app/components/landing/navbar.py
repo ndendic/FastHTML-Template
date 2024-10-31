@@ -1,93 +1,153 @@
 from fasthtml.common import *
-from fasthtml.svg import *
+from fh_frankenui.core import *
+from fh_frankenui import *
 
 
-def navbar():
-    return Nav(
-        Div(
-            A(
-                Img(
-                    src="https://flowbite.com/docs/images/logo.svg",
-                    alt="Flowbite Logo",
-                    cls="h-8",
-                ),
-                Span(
-                    "supa_saas",
-                    cls="self-center text-2xl font-semibold whitespace-nowrap dark:text-white",
-                ),
-                href="https://flowbite.com/",
-                cls="flex items-center space-x-3 rtl:space-x-reverse",
-            ),
-            Div(
-                A(
-                    Button(
-                        "Login",
-                        type="button",
-                        cls="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800",
-                    ),
-                    href="/auth/login",
-                ),
-                Button(
-                    Span("Open main menu", cls="sr-only"),
-                    Svg(
-                        Path(
-                            stroke="currentColor",
-                            stroke_linecap="round",
-                            stroke_linejoin="round",
-                            stroke_width="2",
-                            d="M1 1h15M1 7h15M1 13h15",
-                        ),
-                        aria_hidden="true",
-                        xmlns="http://www.w3.org/2000/svg",
-                        fill="none",
-                        viewbox="0 0 17 14",
-                        cls="w-5 h-5",
-                    ),
-                    data_collapse_toggle="navbar-sticky",
-                    type="button",
-                    aria_controls="navbar-sticky",
-                    aria_expanded="false",
-                    cls="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600",
-                ),
-                cls="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse",
-            ),
-            Div(
-                Ul(
-                    Li(
-                        A(
-                            "Home",
-                            href="#",
-                            aria_current="page",
-                            cls="block py-2 px-3 text-white bg-primary-700 rounded md:bg-transparent md:text-primary-700 md:p-0 md:dark:text-primary-500",
-                        )
-                    ),
-                    Li(
-                        A(
-                            "About",
-                            href="#",
-                            cls="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-700 md:p-0 md:dark:hover:text-primary-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700",
-                        )
-                    ),
-                    Li(
-                        A(
-                            "Services",
-                            href="#",
-                            cls="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-700 md:p-0 md:dark:hover:text-primary-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700",
-                        )
-                    ),
-                    Li(
-                        A(
-                            "Contact",
-                            href="#",
-                            cls="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary-700 md:p-0 md:dark:hover:text-primary-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700",
-                        )
-                    ),
-                    cls="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700",
-                ),
-                id="navbar-sticky",
-                cls="items-center justify-between hidden w-full md:flex md:w-auto md:order-1",
-            ),
-            cls="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4",
+def MobileDrawer():
+    nav_items = [
+        ("Home", "/"),
+        ("About", "/about"),
+        ("Pricing", "/pricing"),
+    ]
+
+    return Div(
+        Button(
+            UkIcon("menu", height=24, width=24),
+            cls=ButtonT.ghost + " md:hidden",
+            uk_toggle="target: #mobile-menu",
         ),
-        cls="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600",
+        Modal(
+            Div(cls="p-6 bg-background")(
+                H3("Menu", cls="text-lg font-semibold mb-4"),
+                NavContainer(
+                    *[
+                        Li(
+                            A(
+                                label,
+                                href=url,
+                                cls="flex items-center p-2 hover:bg-muted rounded-lg transition-colors",
+                            )
+                        )
+                        for label, url in nav_items
+                    ],
+                    Li(DividerLine(lwidth=2, y_space=4)),
+                    Li(
+                        A(
+                            "Sign in",
+                            href="/login",
+                            cls="flex items-center p-2 hover:bg-muted rounded-lg transition-colors",
+                        )
+                    ),
+                    Li(
+                        Button(
+                            "Get Started",
+                            cls=ButtonT.primary + " w-full mt-2",
+                            onclick="window.location.href='/pricing'",
+                        )
+                    ),
+                    cls=NavT.primary + " space-y-2",
+                ),
+            ),
+            id="mobile-menu",
+        ),
+    )
+
+
+def theme_toggle():
+    return Button(
+        UkIcon(icon="moon"),
+        Script("""
+            function initializeTheme() {
+                const themeToggle = document.getElementById('theme-toggle');
+                if (!themeToggle) return;
+                
+                const icon = themeToggle.querySelector('uk-icon');
+                const htmlElement = document.documentElement;
+                
+                // Check initial theme
+                if (
+                    localStorage.getItem("mode") === "dark" ||
+                    (!("mode" in localStorage) &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches)
+                ) {
+                    htmlElement.classList.add("dark");
+                    icon.setAttribute('icon', 'sun');
+                } else {
+                    htmlElement.classList.remove("dark");
+                    icon.setAttribute('icon', 'moon');
+                }
+                
+                // Toggle theme
+                themeToggle.addEventListener('click', () => {
+                    const isDark = htmlElement.classList.contains('dark');
+                    
+                    if (isDark) {
+                        htmlElement.classList.remove('dark');
+                        localStorage.setItem('mode', 'light');
+                        icon.setAttribute('icon', 'moon');
+                    } else {
+                        htmlElement.classList.add('dark');
+                        localStorage.setItem('mode', 'dark');
+                        icon.setAttribute('icon', 'sun');
+                    }
+                });
+            }
+
+            // Initialize when DOM is loaded
+            document.addEventListener('DOMContentLoaded', initializeTheme);
+            // Re-initialize when HTMX content is loaded (if you're using HTMX)
+            document.addEventListener('htmx:afterSettle', initializeTheme);
+        """),
+        id="theme-toggle",
+        cls=ButtonT.ghost + " flex items-center justify-center",
+    )
+
+
+def Navbar():
+    nav_items = [
+        ("Home", "/"),
+        ("About", "/about"),
+        ("Pricing", "/pricing"),
+    ]
+
+    return Header(
+        cls="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+    )(
+        Div(cls="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16")(
+            Div(cls="flex h-full justify-between items-center")(
+                Div(cls="flex items-center gap-x-8")(
+                    # Mobile menu drawer
+                    MobileDrawer(),
+                    # Logo
+                    A(href="/", cls="flex items-center")(
+                        Span("SaaS", cls="font-bold text-xl")
+                    ),
+                    # Desktop navigation
+                    Nav(cls="hidden md:flex items-center space-x-8")(
+                        *[
+                            A(
+                                label,
+                                href=url,
+                                cls="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60",
+                            )
+                            for label, url in nav_items
+                        ]
+                    ),
+                ),
+                # Desktop CTA buttons
+                Div(cls="hidden md:flex items-center space-x-4")(
+                    theme_toggle(),
+                    A(
+                        "Sign in",
+                        href="/login",
+                        cls="text-sm font-medium transition-colors hover:text-primary",
+                    ),
+                    Button(
+                        "Get Started",
+                        cls=ButtonT.primary,
+                        onclick="window.location.href='/pricing'",
+                    ),
+                ),
+            )
+        )
     )
