@@ -6,10 +6,15 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "bcrypt>=4.2.0",
+    "fh-frankenui",
     "jupyterlab>=4.2.5",
     "notebook>=7.2.2",
+    "psycopg2-binary>=2.9.10",
     "python-decouple>=3.8",
     "python-fasthtml>=0.8.0",
     "sqlmodel>=0.0.22",
     "supabase>=2.9.1",
 ]
+
+[tool.uv.sources]
+fh-frankenui = { git = "https://github.com/AnswerDotAI/fh-frankenui.git" }

@@ -5,10 +5,10 @@
             "name": "Python: FastHTML",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/supa_saas/main.py",
+            "program": "${workspaceFolder}/project/main.py",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "cwd": "${workspaceFolder}/supa_saas",
+            "cwd": "${workspaceFolder}/project",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             }
