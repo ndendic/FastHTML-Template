@@ -8,7 +8,7 @@ rt = APIRouter()
 auth_service = AuthService()
 
 
-@rt("/login")
+@rt("/auth/login")
 async def get(request):
     left = Div(
         cls="col-span-1 hidden flex-col justify-between bg-zinc-900 p-8 text-white lg:flex"
@@ -84,7 +84,7 @@ async def get(request):
     return Grid(left, right, cols=2, gap=0, cls="h-screen")
 
 
-@rt("/login")
+@rt("/auth/login")
 async def post(request):
     try:
         form = await request.form()
