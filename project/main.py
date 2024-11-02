@@ -47,4 +47,4 @@ setup_custom_toasts(app)
 app = add_routes(app)
 
 if __name__ == "__main__":
-    serve(reload=True)
+    serve(reload=True, port=8000)

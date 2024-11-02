@@ -13,8 +13,17 @@ wheels/
 .env
 .env.local
 .env.*.local
-
 # IDE specific files
 .vscode/
 .idea/
 *.swp
+.sesskey
+
+.python-version
+
+# Exclude Alembic migration versions
+migrations/versions/
+
+# Exclude SQLite database files
+*.sqlite
+*.sqlite3
