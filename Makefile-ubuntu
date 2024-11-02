@@ -1,0 +1,99 @@
+# Check for required commands
+SHELL := /bin/bash
+PYTHON := $(shell command -v python3 2> /dev/null)
+GIT := $(shell command -v git 2> /dev/null)
+
+# Initialize uv environment and activate it
+init:
+	@echo "Checking if uv is installed..."
+	@if command -v uv &> /dev/null; then \
+		echo "Creating new uv environment..."; \
+		uv venv .venv; \
+		echo "Installing dependencies from pyproject.toml..."; \
+		source .venv/bin/activate && uv pip install -e .; \
+	else \
+		echo "uv is not installed. Would you like to:"; \
+		echo "1) Install uv (recommended)"; \
+		echo "2) Continue with standard venv"; \
+		read -p "Enter choice (1/2): " choice; \
+		if [ "$$choice" = "1" ]; then \
+			curl -LsSf https://astral.sh/uv/install.sh | sh; \
+			echo "uv installed. Creating new environment..."; \
+			uv venv .venv; \
+			source .venv/bin/activate && uv pip install -e .; \
+		else \
+			echo "Creating standard venv environment..."; \
+			$(PYTHON) -m venv .venv; \
+			source .venv/bin/activate && pip install -e .; \
+		fi; \
+	fi
+
+# Initialize and push to GitHub
+github-init:
+	@if [ -z "$(REPO)" ]; then \
+		echo "Error: REPO is not set. Usage: make github-init REPO=repository-name"; \
+		exit 1; \
+	fi
+	@if [ ! -d ".git" ]; then \
+		echo "Initializing Git repository..." && \
+		git init; \
+	else \
+		echo "Git repository already initialized, continuing..."; \
+	fi
+	@git add .
+	@git commit -m "Initial commit" || true
+	@echo "Checking current branch name..."
+	@CURRENT_BRANCH=$$(git rev-parse --abbrev-ref HEAD); \
+	if [ "$$CURRENT_BRANCH" != "main" ]; then \
+		echo "Current branch is $$CURRENT_BRANCH, renaming to main..."; \
+		git branch -M main; \
+	fi
+	@echo "Checking if GitHub CLI is installed..."
+	@if command -v gh &> /dev/null; then \
+		echo "Creating GitHub repository..."; \
+		gh repo create $(REPO) --private --source=. --remote=origin || true; \
+	else \
+		echo "GitHub CLI (gh) is not installed. Skipping repository creation..."; \
+	fi
+	@echo "Pushing to GitHub..."
+	@git push -u origin main
+	@echo "Repository successfully pushed to GitHub!"
+
+# Run the application
+run:
+	@source .venv/bin/activate && python $${PROJECT_NAME}/main.py
+
+# Run all tests
+test:
+	@source .venv/bin/activate && pytest $${PROJECT_NAME}/tests/ -v
+
+# Run tests with coverage report
+test-coverage:
+	@source .venv/bin/activate && pytest $${PROJECT_NAME}/tests/ --cov=$${PROJECT_NAME} --cov-report=html --cov-report=term-missing
+
+# Clean up python cache and test files
+clean:
+	@find . -type d -name "__pycache__" -exec rm -rf {} +
+	@find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	@find . -type d -name ".coverage" -exec rm -rf {} +
+	@find . -type d -name "htmlcov" -exec rm -rf {} +
+	@find . -type f -name "*.pyc" -delete
+	@find . -type f -name ".coverage" -delete
+	@echo "Cleaned up python cache and test files"
+
+# Create a new release
+release:
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is not set. Usage: make release VERSION=x.x.x"; \
+		exit 1; \
+	fi
+	@echo "Creating new release $(VERSION)..."
+	@git tag -a v$(VERSION) -m "Release version $(VERSION)"
+	@git push origin v$(VERSION)
+	@if command -v gh &> /dev/null; then \
+		gh release create v$(VERSION) --generate-notes; \
+	else \
+		echo "GitHub CLI (gh) is not installed. Skipping release creation..."; \
+	fi
+
+.PHONY: init github-init run test test-coverage clean release
