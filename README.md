@@ -37,21 +37,55 @@ This will:
 - Install all required dependencies
 - Set up the project for development
 
-## Project Structure
+## Codebase Structure
+
+### Top-Level Overview
 
 ```
-project/
+FastHTML-Template/
+├── docs/                  # Documentation files
+├── notebooks/             # Jupyter Notebooks for testing and documentation
+│   ├── FastHTML.ipynb     # Example notebook
+│   └── .ipynb_checkpoints/ # Notebook checkpoints
+├── project/               # Main project directory
+├── scripts/               # Utility scripts
+│   ├── create_page.py     # Script to create new pages
+│   └── post_template_setup.py # Script to set up the template
+├── .gitignore             # Git ignore file
+├── Makefile               # Makefile with various commands
+├── pyproject.toml         # Project configuration file
+└── README.md              # Project README file
+```
+
+### Project structure
+```project/
 ├── app/                    # Application code
 │   ├── components/         # Reusable UI components
-│   ├── models/            # Data models
-│   ├── pages/             # Page routes and views
-│   ├── services/          # Business logic and services
-│   │   └── db/           # Database services
-│   ├── templates/         # Page templates
-│   └── utils/             # Utility functions
-├── config/                # Configuration files
-├── static/                # Static assets
-└── tests/                 # Test files
+│   │   ├── landing/        # Landing page components
+│   │   │   ├── footer.py
+│   │   │   ├── hero.py
+│   │   │   ├── navbar.py
+│   │   │   └── page.py
+│   │   └── application/    # Application-specific components
+│   │       └── navbar.py
+│   ├── models/             # Data models
+│   │   └── base.py
+│   ├── pages/              # Page routes and views
+│   │   ├── application/    # Application-specific pages
+│   │   ├── err/            # Error pages
+│   │   ├── templates/      # Page templates
+│   │   │   ├── __init__.py
+│   │   │   └── template.py
+│   │   ├── about.py        # About page
+│   │   ├── index.py        # Home page
+│   │   └── pricing.py      # Pricing page
+│   ├── services/           # Business logic and services
+│   │   └── db/             # Database services
+│   ├── templates/          # Page templates
+│   └── utils/              # Utility functions
+├── config/                 # Configuration files
+├── static/                 # Static assets
+└── tests/                  # Test files
 ```
 
 ## Development Commands
@@ -109,26 +143,44 @@ make test
 
 The template uses FastHTML's built-in database functionality. To work with the database:
 
-1. Define your models in the `app/models` directory
-2. Use FastHTML's database API for queries and operations
-3. Access the database through the FastHTML context in your routes
+1. Define your models by extending the `BaseTable` class in the `app/models` directory.
+2. Use FastHTML's database API for queries and operations.
+3. Access the database through the FastHTML context in your routes.
+
+### BaseTable Features
+
+The `BaseTable` class provides the following features:
+- Automatic UUID primary key generation.
+- Timestamps for creation and updates.
+- Common database operations such as `query`, `get`, `update`, `delete`, and `upsert`.
+- Custom dictionary serialization with support for nested models and datetime fields.
 
 Example model:
 ```python
-from fasthtml.db import Model, Column, String
+from datetime import datetime
+from typing import Any, Dict, Optional
+from sqlmodel import Field
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSON
+from app.models.base import BaseTable
 
-class User(Model):
-    name = Column(String)
-    email = Column(String, unique=True)
+class User(BaseTable, table=True):
+    email: str = Field(nullable=False)
+    password: str = Field(default="")
+    role: str = Field(default="authenticated")
+    is_admin: bool = Field(default=False)
+    user_metadata: Dict[str, Any] = Field(sa_column=Column(JSON))
+    confirmed_at: Optional[datetime] = None
+    email_confirmed_at: Optional[datetime] = None
+    last_sign_in_at: Optional[datetime] = None
+
+    table_fields = ["id", "email", "first_name", "last_name", "is_admin"]
+
+    @classmethod
+    def get_by_email(cls, email: str) -> "User":
+        return cls.get(id=email, alt_key="email")
 ```
 
-Example usage in a route:
-```python
-@rt("/users")
-def get(request):
-    users = User.query.all()
-    return Template("users.html", users=users)
-```
 
 ## Contributing
 
