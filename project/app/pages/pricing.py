@@ -26,7 +26,7 @@ def PricingTiers():
     tiers = [
         {
             "name": "Starter",
-            "price": "$49",
+            "price": "$0.00",
             "description": "Perfect for small projects and individual developers",
             "features": [
                 "All core features",
@@ -40,7 +40,7 @@ def PricingTiers():
         },
         {
             "name": "Pro",
-            "price": "$99",
+            "price": "$0.00",
             "description": "Best for growing teams and businesses",
             "features": [
                 "Everything in Starter",
