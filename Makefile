@@ -39,7 +39,6 @@ run:
 test:
 	pytest project/tests/ -v
 
-
 # Run tests with coverage report
 test-coverage:
 	pytest project/tests/ --cov=app --cov-report=html --cov-report=term-missing
@@ -67,6 +66,7 @@ init:
 			echo "Creating standard venv environment..."; \
 			python -m venv .venv; \
 			. .venv/bin/activate && pip install -e .; \
+			source .venv/bin/activate; \
 		fi; \
 	fi
 
