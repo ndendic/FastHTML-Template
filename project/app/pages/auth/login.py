@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from fasthtml.core import APIRouter
-from project.app.services.auth.auth_service import AuthService
+from app.services.auth.auth_service import AuthService
 from fh_frankenui.core import *
 from starlette.responses import RedirectResponse
 from app.components.toaster import add_custom_toast
@@ -25,7 +25,7 @@ async def get(request):
 
     right = Div(cls="col-span-2 flex flex-col p-8 lg:col-span-1")(
         DivRAligned(
-            A(Button("Register", cls=ButtonT.ghost, submit=False), href="/register")
+            A(Button("Register", cls=ButtonT.ghost, submit=False), href="/auth/register")
         ),
         DivCentered(cls="flex-1")(
             Div(cls=f"space-y-6 w-[350px]")(

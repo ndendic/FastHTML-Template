@@ -1,5 +1,5 @@
 from app.components.toaster import add_custom_toast
-from project.app.services.auth.auth_service import AuthService
+from app.services.auth.auth_service import AuthService
 from fasthtml.common import *
 from fasthtml.core import APIRouter
 from fh_frankenui.core import *
