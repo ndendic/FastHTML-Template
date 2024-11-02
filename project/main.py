@@ -1,32 +1,47 @@
-import logging
 import secrets
 
 from app.components.toaster import setup_custom_toasts
 from app.pages.err.page404 import custom_404_handler
 from fasthtml.common import *
+from fh_frankenui.core import *
 from route_collector import add_routes
 
+frankenui_headers = Theme.rose.headers()
 
 
-hdrs = (
-    Script(src="https://cdn.tailwindcss.com"),
-    Link(
-        rel="stylesheet",
-        href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css",
-    ),
-    Script(src="/tailwind.config.js"),  # Updated to use static path
+login_redir = RedirectResponse("/auth/login", status_code=303)
+
+
+def user_auth_before(req, sess):
+    auth = req.scope["user"] = sess.get("user", None)
+    if not auth:
+        return login_redir
+
+
+middleware = [Middleware(SessionMiddleware, secret_key=secrets.token_urlsafe(32))]
+beforeware = Beforeware(
+    user_auth_before,
+    skip=[
+        r"/favicon\.ico",
+        r"/static/.*",
+        r".*\.css",
+        r".*\.js",
+        r"/auth/.*",
+        r"/api/.*",
+        "/",
+    ],
 )
-ftrs = [Script(src="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.js")]
 
 
 app, rt = fast_app(
+    before=beforeware,
+    middleware=middleware,
     static_path="project/static",
     live=True,
     pico=False,
-    hdrs=hdrs,
-    ftrs=ftrs,
+    hdrs=frankenui_headers,
     exception_handlers={404: custom_404_handler},
-)   
+)
 
 setup_custom_toasts(app)
 app = add_routes(app)
