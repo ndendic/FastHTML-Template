@@ -13,11 +13,11 @@ def HeroSection():
     return Div(cls="py-24 px-6 lg:px-8 bg-background")(
         Div(cls="mx-auto max-w-3xl text-center")(
             H1(
-                "Build faster with our SaaS Boilerplate",
+                "Build faster with our Project Boilerplate",
                 cls="text-4xl font-bold tracking-tight sm:text-6xl",
             ),
             P(
-                "Launch your SaaS project in minutes, not months. Everything you need to start building your next great idea.",
+                "Launch your Project project in minutes, not months. Everything you need to start building your next great idea.",
                 cls=TextFont.muted_lg + " mt-6",
             ),
             Div(cls="mt-10 flex items-center justify-center gap-x-6")(
