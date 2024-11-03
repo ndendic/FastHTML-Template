@@ -36,12 +36,42 @@ def utc_now() -> datetime:
 
 def get_model_fields(model: Type[SQLModel]) -> List[str]:
     """Get all field names for a model."""
-    return list(model.__fields__.keys())
+    return list(model.model_fields.keys())
 
 def all_records(model: Type[SQLModel]) -> List[SQLModel]:
     """Get all records for a model."""
     with Session(engine) as session:
         return session.exec(select(model)).all()
+
+def convert_datetime_strings(model: Type[SQLModel], data: Dict[str, Any]) -> Dict[str, Any]:
+    """Convert ISO format datetime strings to datetime objects based on model field types."""
+    converted_data = data.copy()
+    for field_name, field in model.model_fields.items():
+        if field_name in converted_data and isinstance(converted_data[field_name], str):
+            # Get the field annotation from the model
+            field_annotation = model.model_fields[field_name].annotation
+            
+            # Check if the field is typed as datetime
+            is_datetime_field = False
+            if field_annotation == datetime:
+                is_datetime_field = True
+            elif hasattr(field_annotation, "__origin__"):
+                if field_annotation.__origin__ is Optional:
+                    if datetime in field_annotation.__args__:
+                        is_datetime_field = True
+
+            if is_datetime_field:
+                try:
+                    # Parse the ISO format string to datetime
+                    dt = datetime.fromisoformat(converted_data[field_name].replace('Z', '+00:00'))
+                    # Ensure UTC timezone
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    converted_data[field_name] = dt
+                except (ValueError, TypeError):
+                    # If conversion fails, leave the original value
+                    pass
+    return converted_data
 
 def query_records(
     model: Type[SQLModel],
@@ -62,9 +92,9 @@ def query_records(
 
         if search_value:
             string_fields = [
-                field.name
-                for field in model.__fields__.values()
-                if field.type_ is str
+                field_name
+                for field_name, field in model.model_fields.items()
+                if field.annotation == str
             ]
             if string_fields:
                 conditions = [
@@ -74,7 +104,7 @@ def query_records(
                 query = query.filter(or_(*conditions))
 
         if sorting_field:
-            if sorting_field in model.__fields__:
+            if sorting_field in model.model_fields:
                 order_field = getattr(model, sorting_field)
                 query = query.order_by(
                     order_field.desc()
@@ -97,7 +127,7 @@ def query_records(
         results = session.exec(query).all()
 
         if as_dict:
-            return [result.dict() for result in results]
+            return [result.model_dump() for result in results]
         return results
 
 def get_record(model: Type[SQLModel], id: Any, alt_key: str = None) -> Optional[SQLModel]:
@@ -113,12 +143,13 @@ def update_record(model: Type[SQLModel], id: Any, data: Dict[str, Any]) -> Dict[
     with Session(engine) as session:
         db_record = session.get(model, id)
         if db_record:
-            for key, value in data.items():
+            converted_data = convert_datetime_strings(model, data)
+            for key, value in converted_data.items():
                 setattr(db_record, key, value)
             session.add(db_record)
             session.commit()
             session.refresh(db_record)
-            return db_record.dict()
+            return db_record.model_dump()
         raise Exception("Record not found")
 
 def delete_record(model: Type[SQLModel], id: Any) -> None:
@@ -134,15 +165,18 @@ def delete_record(model: Type[SQLModel], id: Any) -> None:
 def upsert_record(model: Type[SQLModel], data: Dict[str, Any]) -> SQLModel:
     """Insert or update a record."""
     with Session(engine) as session:
-        if "id" in data:
-            db_record = session.get(model, data["id"])
+        # Convert any datetime strings to datetime objects
+        converted_data = convert_datetime_strings(model, data)
+        
+        if "id" in converted_data:
+            db_record = session.get(model, converted_data["id"])
             if db_record:
-                for key, value in data.items():
+                for key, value in converted_data.items():
                     setattr(db_record, key, value)
             else:
-                db_record = model(**data)
+                db_record = model(**converted_data)
         else:
-            db_record = model(**data)
+            db_record = model(**converted_data)
 
         session.add(db_record)
         session.commit()
@@ -152,7 +186,8 @@ def upsert_record(model: Type[SQLModel], data: Dict[str, Any]) -> SQLModel:
 def bulk_insert(model: Type[SQLModel], data: List[Dict[str, Any]]) -> List[SQLModel]:
     """Insert multiple records at once."""
     with Session(engine) as session:
-        db_records = [model(**item) for item in data]
+        converted_data = [convert_datetime_strings(model, item) for item in data]
+        db_records = [model(**item) for item in converted_data]
         session.add_all(db_records)
         session.commit()
         for record in db_records:
@@ -167,7 +202,8 @@ def bulk_update(model: Type[SQLModel], data: List[Dict[str, Any]]) -> List[SQLMo
             if "id" in item:
                 db_record = session.get(model, item["id"])
                 if db_record:
-                    for key, value in item.items():
+                    converted_item = convert_datetime_strings(model, item)
+                    for key, value in converted_item.items():
                         setattr(db_record, key, value)
                     updated_records.append(db_record)
         session.add_all(updated_records)

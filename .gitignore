@@ -27,3 +27,4 @@ migrations/versions/
 # Exclude SQLite database files
 *.sqlite
 *.sqlite3
+*.db

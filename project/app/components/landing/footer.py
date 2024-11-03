@@ -8,7 +8,7 @@ def footer():
             Div(
                 A(
                     Img(src='https://flowbite.com/docs/images/logo.svg', alt='FlowBite Logo', cls='mr-3 h-8'),
-                    Span('supa_saas', cls='self-center text-2xl font-semibold whitespace-nowrap dark:text-white'),
+                    Span('supa_app', cls='self-center text-2xl font-semibold whitespace-nowrap dark:text-white'),
                     href='https://flowbite.com',
                     cls='flex items-center'
                 ),
@@ -19,7 +19,7 @@ def footer():
                     H2('Resources', cls='mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white'),
                     Ul(
                         Li(
-                            A('supa_saas', href='https://flowbite.com', cls='hover:underline'),
+                            A('supa_app', href='https://flowbite.com', cls='hover:underline'),
                             cls='mb-4'
                         ),
                         Li(
@@ -62,7 +62,7 @@ def footer():
         Div(
             Span(
                 '© 2022',
-                A('supa_saas™', href='https://flowbite.com', cls='hover:underline'),
+                A('supa_app™', href='https://flowbite.com', cls='hover:underline'),
                 '. All Rights Reserved.',
                 cls='text-sm text-gray-500 sm:text-center dark:text-gray-400'
             ),

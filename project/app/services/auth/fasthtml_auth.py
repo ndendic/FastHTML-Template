@@ -1,23 +1,25 @@
-import logging
-import secrets
-import time
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 import asyncio
-import bcrypt
+import logging
+import random
+import smtplib
+import time
 
+import bcrypt
+import resend
 from app.models.auth.models import User
-from fasthtml.oauth import GoogleAppClient, redir_url
 from decouple import config
+from fasthtml.oauth import GoogleAppClient, redir_url
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
 class FastHTMLAuth:
+    # Store OTPs with email and expiry
+    otps = {}
+
     def __init__(self):
-        self.reset_tokens = {}
+        pass
 
     async def login(self, request, email, password):
         try:
@@ -27,6 +29,23 @@ class FastHTMLAuth:
             return None
         except Exception as e:
             logger.error(f"FastHTML login error: {e}")
+            return None
+
+    async def login_otp(self, request, email, otp):
+        """Verify OTP and login user"""
+        try:
+            # Validate the OTP
+            if await self.validate_otp(request, email, otp):
+                # Get the user
+                user = User.get_by_email(email)
+                if user:
+                    # Clean up the OTP after successful login
+                    if email in FastHTMLAuth.otps:
+                        del FastHTMLAuth.otps[email]
+                    return user
+            return None
+        except Exception as e:
+            logger.error(f"FastHTML OTP login error: {e}")
             return None
 
     async def oauth_login(self, request, provider, code: str = None):
@@ -59,70 +78,114 @@ class FastHTMLAuth:
             logger.error(f"FastHTML registration error: {e}")
             return None
 
+    def _generate_otp(self) -> str:
+        """Generate a 6-digit OTP"""
+        return "".join([str(random.randint(0, 9)) for _ in range(6)])
+
     async def request_password_reset(self, request, email):
         try:
             user = User.get_by_email(email)
             if user:
-                token = secrets.token_urlsafe()
-                self.reset_tokens[token] = {
-                    "email": user.email,
-                    "expires": time.time() + 3600,
-                }  # 1 hour expiry
-                await self._send_reset_email(email, token)
+                otp = self._generate_otp()
+                FastHTMLAuth.otps[email] = {
+                    "otp": otp,
+                    "expires": time.time() + 300,  # 5 minutes expiry
+                    "attempts": 0,  # Track failed attempts
+                }
+                await self._send_otp_email(email, otp)
                 return True
             return False
         except Exception as e:
             logger.error(f"FastHTML password reset request error: {e}")
             return False
 
+    async def validate_otp(self, request, email, otp):
+        try:
+            otp_data = FastHTMLAuth.otps.get(email)
+            if not otp_data:
+                return False
+
+            # Check if OTP has expired
+            if time.time() > otp_data["expires"]:
+                del FastHTMLAuth.otps[email]
+                return False
+
+            # Check if too many failed attempts
+            if otp_data["attempts"] >= 3:
+                del FastHTMLAuth.otps[email]
+                return False
+
+            # Validate OTP
+            if otp_data["otp"] == otp:
+                # OTP is valid - mark it as verified but don't delete yet
+                # It will be deleted after password reset
+                FastHTMLAuth.otps[email]["verified"] = True
+                return True
+            else:
+                # Increment failed attempts
+                FastHTMLAuth.otps[email]["attempts"] += 1
+                return False
+
+        except Exception as e:
+            logger.error(f"FastHTML OTP validation error: {e}")
+            return False
+
     async def reset_password(self, request, token, new_password):
         try:
-            token_data = self.reset_tokens.get(token)
-            if token_data and time.time() < token_data["expires"]:
-                email = token_data["email"]
-                hashed_password = bcrypt.hashpw(
-                    new_password.encode("utf-8"), bcrypt.gensalt()
-                ).decode("utf-8")
-                # self.users.update({"password": hashed_password}, email)TODO
-                del self.reset_tokens[token]
-                return True
+            # Get email from request
+            email = request.query_params.get("email")
+            if not email:
+                return False
+
+            otp_data = FastHTMLAuth.otps.get(email)
+            if otp_data and otp_data.get("verified"):
+                user = User.get_by_email(email)
+                if user:
+                    hashed_password = bcrypt.hashpw(
+                        new_password.encode("utf-8"), bcrypt.gensalt()
+                    ).decode("utf-8")
+                    user.password = hashed_password
+                    user.save()
+                    # Clean up the OTP after successful password reset
+                    del FastHTMLAuth.otps[email]
+                    return True
             return False
         except Exception as e:
             logger.error(f"FastHTML password reset error: {e}")
             return False
 
-    async def _send_reset_email(self, email, token):
-        # TODO: Implement this method with Resend
-        smtp_server = config("SMTP_SERVER")
-        smtp_port = config("SMTP_PORT")
-        smtp_username = config("SMTP_USERNAME")
-        smtp_password = config("SMTP_PASSWORD")
-        reset_url = f"{config('BASE_URL')}/reset-password/{token}"
+    async def _send_otp_email(self, email, otp):
+        smtp_password = config("RESEND_API_KEY")
+        resend.api_key = smtp_password
 
-        msg = MIMEMultipart()
-        msg["From"] = smtp_username
-        msg["To"] = email
-        msg["Subject"] = "Password Reset Request"
-
-        body = f"Click the following link to reset your password: {reset_url}"
-        msg.attach(MIMEText(body, "plain"))
+        params: resend.Emails.SendParams = {
+            "from": "noreply@artyficial.space",
+            "to": [email],
+            "subject": "Password Reset OTP",
+            "html": f"""
+                <h2>Password Reset Request</h2>
+                <p>Your one-time password (OTP) for password reset is: <strong>{otp}</strong></p>
+                <p>This OTP will expire in 5 minutes.</p>
+                <p>If you did not request this password reset, please ignore this email.</p>
+            """,
+            "reply_to": "ndendic@artyficial.space",
+        }
 
         try:
-            await asyncio.get_event_loop().run_in_executor(
-                None,
-                self._send_email,
-                smtp_server,
-                smtp_port,
-                smtp_username,
-                smtp_password,
-                msg,
-            )
-            logger.info(f"Password reset email sent to {email}")
+            email: resend.Email = resend.Emails.send(params)
+            logger.info(f"Password reset OTP sent to {email}")
+            return True
+        except asyncio.TimeoutError:
+            logger.error("Email sending timed out")
+            return False
         except Exception as e:
-            logger.error(f"Error sending password reset email: {e}")
+            logger.error(f"Error sending password reset OTP: {e}")
+            return False
 
-    def _send_email(self, smtp_server, smtp_port, smtp_username, smtp_password, msg):
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
+    def _send_email_sync(
+        self, smtp_server, smtp_port, smtp_username, smtp_password, msg
+    ):
+        with smtplib.SMTP(smtp_server, smtp_port, timeout=5) as server:
             server.starttls()
             server.login(smtp_username, smtp_password)
             server.send_message(msg)

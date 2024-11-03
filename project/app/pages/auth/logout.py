@@ -8,7 +8,9 @@ auth_service = AuthService()
 
 
 @rt("/auth/logout")
+# @page_template()
 async def get(request):
+    # Handle GET request
     result = await auth_service.logout(request, request.session)
     if result:
         return RedirectResponse(url="/", status_code=303)

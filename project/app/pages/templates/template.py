@@ -5,7 +5,7 @@ from ...components.application.navbar import top_nav
 from ...components.landing.navbar import Navbar
 
 
-def page_template(title="FastSaas"):
+def page_template(title="FastApp"):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
             content = func(request)
@@ -25,7 +25,7 @@ def page_template(title="FastSaas"):
     return decorator
 
 
-def app_template(title="FastSaas"):
+def app_template(title="FastApp"):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
             content = func(request)

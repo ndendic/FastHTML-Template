@@ -203,7 +203,7 @@ def ComparisonSection():
 
 
 @rt("/pricing")
-@page_template(title="Pricing - SaaS Boilerplate")
+@page_template(title="Pricing - Boilerplate")
 def get(request):
     return Div(cls="py-24 sm:py-32")(
         PricingHeader(), PricingTiers(), ComparisonSection()
