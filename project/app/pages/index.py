@@ -78,7 +78,7 @@ def FeatureSection():
                     cls="mt-2 text-3xl font-bold tracking-tight sm:text-4xl",
                 ),
                 P(
-                    "Our boilerplate includes everything you need to build a modern SaaS application.",
+                    "Our boilerplate includes everything you need to build a modern application.",
                     cls=TextFont.muted_lg + " mt-6",
                 ),
             ),
@@ -113,7 +113,7 @@ def CTASection():
                     cls="text-3xl font-bold tracking-tight text-white sm:text-4xl",
                 ),
                 P(
-                    "Start building your next great idea today with our complete SaaS boilerplate.",
+                    "Start building your next great idea today with our complete boilerplate.",
                     cls="mx-auto mt-6 max-w-xl text-lg leading-8 text-white/80",
                 ),
                 Div(cls="mt-10 flex items-center justify-center gap-x-6")(
@@ -130,6 +130,6 @@ def CTASection():
 
 
 @rt("/")
-@page_template(title="SaaS Boilerplate - Build Faster")
+@page_template(title="App Boilerplate - Build Faster")
 def get(request):
     return Div(HeroSection(), Uk_theme_switcher(), FeatureSection(), CTASection())

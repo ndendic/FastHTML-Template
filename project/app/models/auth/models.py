@@ -3,8 +3,8 @@ from typing import Any, Dict, Optional
 
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSON
+import sqlalchemy
 
-# from dataclasses import dataclass, field
 from sqlmodel import Field
 
 from ..base import BaseTable
@@ -16,9 +16,21 @@ class User(BaseTable, table=True):
     role: str = Field(default="authenticated")
     is_admin: bool = Field(default=False)
     user_metadata: Dict[str, Any] = Field(sa_column=Column(JSON))
-    confirmed_at: Optional[datetime] = None
-    email_confirmed_at: Optional[datetime] = None
-    last_sign_in_at: Optional[datetime] = None
+    confirmed_at: Optional[datetime] = Field(
+        default=None,
+        nullable=True,
+        sa_type=sqlalchemy.DateTime(timezone=True),
+    )
+    email_confirmed_at: Optional[datetime] = Field(
+        default=None,
+        nullable=True,
+        sa_type=sqlalchemy.DateTime(timezone=True),
+    )
+    last_sign_in_at: Optional[datetime] = Field(
+        default=None,
+        nullable=True,
+        sa_type=sqlalchemy.DateTime(timezone=True),
+    )
 
     table_fields = ["id", "email", "first_name", "last_name", "is_admin"]
 

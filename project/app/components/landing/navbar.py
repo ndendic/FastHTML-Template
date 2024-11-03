@@ -120,7 +120,7 @@ def Navbar():
                     MobileDrawer(),
                     # Logo
                     A(href="/", cls="flex items-center")(
-                        Span("SaaS", cls="font-bold text-xl")
+                        Span("supa_app", cls="font-bold text-xl")
                     ),
                     # Desktop navigation
                     Nav(cls="hidden md:flex items-center space-x-8")(
