@@ -1,4 +1,3 @@
-
 from fasthtml.common import *
 from starlette.responses import RedirectResponse
 from app.components.auth.reset_password.forgot_pass import forgot_pass_page

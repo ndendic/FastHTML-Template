@@ -22,7 +22,7 @@ wheels/
 .python-version
 
 # Exclude Alembic migration versions
-migrations/versions/
+migrations/versions/*
 
 # Exclude SQLite database files
 *.sqlite

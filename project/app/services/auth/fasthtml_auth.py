@@ -9,6 +9,7 @@ import resend
 from app.models.auth.models import User
 from decouple import config
 from fasthtml.oauth import GoogleAppClient, redir_url
+from app.components.toaster import add_custom_toast
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
@@ -24,10 +25,18 @@ class FastHTMLAuth:
     async def login(self, request, email, password):
         try:
             user = User.get_by_email(email)
+            if not user:
+                add_custom_toast(
+                    request.session, f"User with email {email} not found", "error"
+                )
+                return None
             if bcrypt.checkpw(password.encode("utf-8"), user.password.encode("utf-8")):
                 return user
+            else:
+                add_custom_toast(request.session, "Incorect Password", "error")
             return None
         except Exception as e:
+            add_custom_toast(request.session, f"Login failed: {e}", "error")
             logger.error(f"FastHTML login error: {e}")
             return None
 
@@ -45,7 +54,9 @@ class FastHTMLAuth:
                     return user
             return None
         except Exception as e:
-            logger.error(f"FastHTML OTP login error: {e}")
+            add_custom_toast(
+                request.session, f"Authentication OTP login error: {e}", "error"
+            )
             return None
 
     async def oauth_login(self, request, provider, code: str = None):
@@ -75,6 +86,7 @@ class FastHTMLAuth:
             user.save()
             return user
         except Exception as e:
+            add_custom_toast(request.session, f"Registration error: {e}", "error")
             logger.error(f"FastHTML registration error: {e}")
             return None
 
@@ -92,10 +104,13 @@ class FastHTMLAuth:
                     "expires": time.time() + 300,  # 5 minutes expiry
                     "attempts": 0,  # Track failed attempts
                 }
-                await self._send_otp_email(email, otp)
+                await self._send_otp_email(request, email, otp)
                 return True
             return False
         except Exception as e:
+            add_custom_toast(
+                request.session, f"Password reset request error: {e}", "error"
+            )
             logger.error(f"FastHTML password reset request error: {e}")
             return False
 
@@ -127,6 +142,7 @@ class FastHTMLAuth:
                 return False
 
         except Exception as e:
+            add_custom_toast(request.session, f"OTP validation error: {e}", "error")
             logger.error(f"FastHTML OTP validation error: {e}")
             return False
 
@@ -151,11 +167,13 @@ class FastHTMLAuth:
                     return True
             return False
         except Exception as e:
+            add_custom_toast(request.session, f"Password reset error: {e}", "error")
             logger.error(f"FastHTML password reset error: {e}")
             return False
 
-    async def _send_otp_email(self, email, otp):
+    async def _send_otp_email(self, request, email, otp):
         smtp_password = config("RESEND_API_KEY")
+
         resend.api_key = smtp_password
 
         params: resend.Emails.SendParams = {
@@ -173,12 +191,19 @@ class FastHTMLAuth:
 
         try:
             email: resend.Email = resend.Emails.send(params)
+            add_custom_toast(
+                request.session, f"Password reset OTP sent to {email}", "info"
+            )
             logger.info(f"Password reset OTP sent to {email}")
             return True
         except asyncio.TimeoutError:
+            add_custom_toast(request.session, "Email sending timed out", "error")
             logger.error("Email sending timed out")
             return False
         except Exception as e:
+            add_custom_toast(
+                request.session, f"Error sending password reset OTP: {e}", "error"
+            )
             logger.error(f"Error sending password reset OTP: {e}")
             return False
 

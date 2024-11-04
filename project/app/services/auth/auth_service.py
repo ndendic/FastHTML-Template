@@ -1,6 +1,6 @@
 import logging
-from config.settings import config
 from .fasthtml_auth import FastHTMLAuth
+from app.components.toaster import add_custom_toast
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
