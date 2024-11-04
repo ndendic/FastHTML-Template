@@ -7,7 +7,7 @@ def otp_page(email: str = None):
     left = Div(
         cls="col-span-1 hidden flex-col justify-between bg-zinc-900 p-8 text-white lg:flex"
     )(
-        Div(cls=(TextT.bold, TextT.default))("Acme Inc"),
+        Div(cls=(TextT.bold, TextT.default))("supa_app"),
         Blockquote(cls="space-y-2")(
             P(cls=TextT.large)(
                 '"Two-factor authentication adds an extra layer of security to your account by requiring more than just a password to sign in."'

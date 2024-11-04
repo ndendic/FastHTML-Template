@@ -7,7 +7,7 @@ def forgot_pass_page():
     left = Div(
         cls="col-span-1 hidden flex-col justify-between bg-zinc-900 p-8 text-white lg:flex"
     )(
-        Div(cls=(TextT.bold, TextT.default))("Acme Inc"),
+        Div(cls=(TextT.bold, TextT.default))("supa_app"),
         Blockquote(cls="space-y-2")(
             P(cls=TextT.large)(
                 '"Secure account recovery made simple - get back to what matters most."'

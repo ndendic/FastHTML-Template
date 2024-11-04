@@ -2,11 +2,12 @@ from fasthtml.common import *
 from fasthtml.svg import *
 from fh_frankenui.core import *
 
+
 def reset_pass_page():
     left = Div(
         cls="col-span-1 hidden flex-col justify-between bg-zinc-900 p-8 text-white lg:flex"
     )(
-        Div(cls=(TextT.bold, TextT.default))("Acme Inc"),
+        Div(cls=(TextT.bold, TextT.default))("supa_app"),
         Blockquote(cls="space-y-2")(
             P(cls=TextT.large)(
                 '"A strong password is random, long, and unique. Never reuse passwords across multiple accounts."'
@@ -39,7 +40,7 @@ def reset_pass_page():
                     ),
                     Input(
                         placeholder="Confirm password",
-                        name="confirm_password", 
+                        name="confirm_password",
                         id="confirm_password",
                         type="password",
                     ),

@@ -81,13 +81,13 @@ recent_sales = Card(
 
 
 # %% ../example_dashboard.ipynb
-teams = [["Alicia Koch"], ["Acme Inc", "Monster Inc."], ["Create a Team"]]
+teams = [["Alicia Koch"], ["supa_app", "Monster Inc."], ["Create a Team"]]
 
 opt_hdrs = ["Personal", "Team", ""]
 
 team_dropdown = UkSelect(
     Optgroup(label="Personal Account")(Option(A("Alicia Koch"))),
-    Optgroup(label="Teams")(Option(A("Acme Inc")), Option(A("Monster Inc."))),
+    Optgroup(label="Teams")(Option(A("supa_app")), Option(A("Monster Inc."))),
     Option(A("Create a Team")),
 )
 
