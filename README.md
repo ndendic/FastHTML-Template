@@ -41,7 +41,7 @@ This will:
 ```bash
 make run
 ```
-This will run example app on port 8000. you can change the port in main.py file.
+This will run example app on port 8000. You can change the port in main.py file.
 
 
 ## Project Structure
@@ -106,7 +106,7 @@ def post(request):
 
 ## Database System
 
-The template includes a robust database system built on SQLModel with a custom BaseTable class.
+The template includes a database system built on SQLModel with a custom BaseTable class.
 
 ### Creating Models
 
@@ -144,7 +144,7 @@ Product.delete(product_id)
 
 ### Database Migrations
 
-The template uses Alembic for database migrations:
+The template uses Alembic for database migrations. If you're using SQLite, make sure you specify absolute database DATABSE_URL in your .env file.
 
 1. After creating or modifying models, generate a migration:
 ```bash
@@ -169,9 +169,9 @@ make migrate
 The template includes a complete authentication system with the following features:
 
 - User registration and login
-- Password reset functionality - under development
-- OAuth support - under development
-- OTP (One-Time Password) support - under development
+- Password reset functionality 
+- OAuth support - under development 🚧
+- OTP (One-Time Password) support - emails are sent using Resend
 - Session management
 
 Example usage in a route:
