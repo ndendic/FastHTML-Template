@@ -5,7 +5,7 @@ import sys
 
 def create_page(route):
     # Convert route to file path
-    file_path = f"supa_app/app/pages/{route.strip('/')}.py"
+    file_path = f"project/app/pages/{route.strip('/')}.py"
 
     # Create directories if they don't exist
     os.makedirs(os.path.dirname(file_path), exist_ok=True)

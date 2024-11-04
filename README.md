@@ -1,6 +1,6 @@
 # FastHTML Template
 
-A modern, feature-rich starter template for building web applications with FastHTML, TailwindCSS, and Flowbite.
+A modern, feature-rich starter template for building web applications with FastHTML, TailwindCSS, and FH-FrankenUI.
 
 ## Features
 
@@ -12,23 +12,21 @@ A modern, feature-rich starter template for building web applications with FastH
 - 📄 Built-in page creation script
 - 🧪 Testing setup with pytest
 - 🗃️ Built-in FastHTML database support
+- 🔐 Complete authentication system
 
 ## Getting Started
 
-### Prerequisites
+This is a template repository on GitHub. To use it:
 
-- Python 3.8 or higher
-- Git
-
-### Installation
-
-1. Clone the repository:
+1. Click the "Use this template" button at the top of the repository
+2. Create a new repository from this template
+3. Clone your new repository:
 ```bash
-git clone <repository-url>
-cd FastHTML-Template
+git clone <your-new-repository-url>
+cd <your-repository-name>
 ```
 
-2. Initialize the development environment:
+4. Initialize the development environment:
 ```bash
 make init
 ```
@@ -37,55 +35,159 @@ This will:
 - Install all required dependencies
 - Set up the project for development
 
-## Codebase Structure
+5. Create your .env.example to include your prefered DATABASE_URL
 
-### Top-Level Overview
+6. Once in your virtual env start the project with:
+```bash
+make run
+```
+This will run example app on port 8000. you can change the port in main.py file.
+
+
+## Project Structure
 
 ```
-FastHTML-Template/
-├── docs/                  # Documentation files
-├── notebooks/             # Jupyter Notebooks for testing and documentation
-│   ├── FastHTML.ipynb     # Example notebook
-│   └── .ipynb_checkpoints/ # Notebook checkpoints
-├── project/               # Main project directory
-├── scripts/               # Utility scripts
-│   ├── create_page.py     # Script to create new pages
-│   └── post_template_setup.py # Script to set up the template
-├── .gitignore             # Git ignore file
-├── Makefile               # Makefile with various commands
-├── pyproject.toml         # Project configuration file
-└── README.md              # Project README file
-```
-
-### Project structure
-```project/
+project/
 ├── app/                    # Application code
 │   ├── components/         # Reusable UI components
-│   │   ├── landing/        # Landing page components
-│   │   │   ├── footer.py
-│   │   │   ├── hero.py
-│   │   │   ├── navbar.py
-│   │   │   └── page.py
-│   │   └── application/    # Application-specific components
-│   │       └── navbar.py
-│   ├── models/             # Data models
-│   │   └── base.py
-│   ├── pages/              # Page routes and views
-│   │   ├── application/    # Application-specific pages
-│   │   ├── err/            # Error pages
-│   │   ├── templates/      # Page templates
-│   │   │   ├── __init__.py
-│   │   │   └── template.py
-│   │   ├── about.py        # About page
-│   │   ├── index.py        # Home page
-│   │   └── pricing.py      # Pricing page
-│   ├── services/           # Business logic and services
-│   │   └── db/             # Database services
-│   ├── templates/          # Page templates
-│   └── utils/              # Utility functions
-├── config/                 # Configuration files
-├── static/                 # Static assets
-└── tests/                  # Test files
+│   ├── models/            # Data models
+│   ├── pages/             # Page routes and views
+│   ├── services/          # Business logic and services
+│   │   └── db/           # Database services
+│   ├── templates/         # Page templates
+│   └── utils/            # Utility functions
+├── config/                # Configuration files
+├── static/                # Static assets
+└── tests/                # Test files
+```
+
+## Automatic Route Collection
+
+The template features an automatic route collection system that scans the `app/pages` directory and registers all routes automatically. Here's how it works:
+
+1. Create a new page in the `app/pages` directory:
+```python
+# app/pages/hello.py
+from fasthtml.common import *
+from fasthtml.core import APIRouter
+
+rt = APIRouter()
+
+@rt("/hello")
+def get(request):
+    return "Hello, World!"
+```
+
+2. The route collector will automatically find and register this route - no manual registration needed!
+
+You can create new pages by using:
+```bash
+make new-page ROUTE=your/page/path
+```
+This will create the same folder route structure under project/app/pages with routes attached to get and post methods.
+
+```python
+from fasthtml.common import *
+from fasthtml.core import APIRouter
+
+rt = APIRouter()
+
+@rt("/your/page/path")
+def get(request):
+    return Titled("New Page", P("This is a new page"))
+
+@rt("/your/page/path")
+def post(request):
+    # Handle POST request
+    return {"message": "Received a POST request"}
+
+# Add other HTTP methods as needed
+```
+
+## Database System
+
+The template includes a robust database system built on SQLModel with a custom BaseTable class.
+
+### Creating Models
+
+Create new models by extending the BaseTable class:
+
+```python
+from sqlmodel import Field
+from app.models.base import BaseTable
+
+class Product(BaseTable, table=True):
+    name: str = Field(nullable=False)
+    price: float = Field(nullable=False)
+    description: str = Field(default="")
+```
+
+### Database Operations
+
+The BaseTable class provides several convenient methods:
+
+```python
+# Create/Update
+product = Product(name="Widget", price=9.99)
+product.save()
+
+# Query
+all_products = Product.all()
+specific_product = Product.get(product_id)
+
+# Update
+Product.update(product_id, {"price": 19.99})
+
+# Delete
+Product.delete(product_id)
+```
+
+### Database Migrations
+
+The template uses Alembic for database migrations:
+
+1. After creating or modifying models, generate a migration:
+```bash
+alembic revision --autogenerate -m "Add product table"
+```
+or
+```bash
+make migrations
+```
+
+
+2. Apply the migration:
+```bash
+alembic upgrade head
+```
+or
+```bash
+make migrate
+```
+## Authentication System
+
+The template includes a complete authentication system with the following features:
+
+- User registration and login
+- Password reset functionality - under development
+- OAuth support - under development
+- OTP (One-Time Password) support - under development
+- Session management
+
+Example usage in a route:
+
+```python
+from app.services.auth import AuthService
+
+auth = AuthService()
+
+@rt("/login")
+async def post(request):
+    data = await request.json()
+    user = await auth.login(request, data["email"], data["password"])
+    if user:
+        return {"status": "success"}
+    return {"status": "error"}
 ```
 
 ## Development Commands
@@ -104,91 +206,16 @@ Create a new page with automatic routing:
 ```bash
 make new-page ROUTE=path/to/your/page
 ```
-Example:
-```bash
-make new-page ROUTE=users/[id]/profile
-```
-This will create a new page with both GET and POST handlers at `app/pages/users/[id]/profile.py`
 
 ### Environment Management
 
 - `make init` - Initialize development environment
 - `make clean` - Clean up cache and temporary files
 
-### GitHub Integration
+## Future Plans
 
-Initialize and push to GitHub:
-```bash
-make github-init REPO=your-repo-name
-```
+- Default components for database table views
+- Frontend rendering system for database records
+- Enhanced authentication features
+- More pre-built UI components
 
-## Usage Examples
-
-1. Create a new page:
-```bash
-make new-page ROUTE=blog/[post_id]
-```
-
-2. Start the development server:
-```bash
-make run
-```
-
-3. Run tests:
-```bash
-make test
-```
-
-## Database Usage
-
-The template uses FastHTML's built-in database functionality. To work with the database:
-
-1. Define your models by extending the `BaseTable` class in the `app/models` directory.
-2. Use FastHTML's database API for queries and operations.
-3. Access the database through the FastHTML context in your routes.
-
-### BaseTable Features
-
-The `BaseTable` class provides the following features:
-- Automatic UUID primary key generation.
-- Timestamps for creation and updates.
-- Common database operations such as `query`, `get`, `update`, `delete`, and `upsert`.
-- Custom dictionary serialization with support for nested models and datetime fields.
-
-Example model:
-```python
-from datetime import datetime
-from typing import Any, Dict, Optional
-from sqlmodel import Field
-from sqlalchemy import Column
-from sqlalchemy.dialects.postgresql import JSON
-from app.models.base import BaseTable
-
-class User(BaseTable, table=True):
-    email: str = Field(nullable=False)
-    password: str = Field(default="")
-    role: str = Field(default="authenticated")
-    is_admin: bool = Field(default=False)
-    user_metadata: Dict[str, Any] = Field(sa_column=Column(JSON))
-    confirmed_at: Optional[datetime] = None
-    email_confirmed_at: Optional[datetime] = None
-    last_sign_in_at: Optional[datetime] = None
-
-    table_fields = ["id", "email", "first_name", "last_name", "is_admin"]
-
-    @classmethod
-    def get_by_email(cls, email: str) -> "User":
-        return cls.get(id=email, alt_key="email")
-```
-
-
-## Contributing
-
-1. Create a new branch for your feature
-2. Make your changes
-3. Run tests to ensure everything works
-4. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.

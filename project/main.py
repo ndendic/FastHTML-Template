@@ -27,6 +27,8 @@ beforeware = Beforeware(
         r".*\.css",
         r".*\.js",
         r"/auth/.*",
+        r"/about",
+        r"/pricing",
         r"/api/.*",
         "/",
     ],

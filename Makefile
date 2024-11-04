@@ -48,9 +48,9 @@ init:
 	@echo "Checking if uv is installed..."
 	@if command -v uv >/dev/null 2>&1; then \
 		echo "Creating new uv environment..."; \
-		uv venv .venv; \
+		uv sync; \
 		echo "Installing dependencies from pyproject.toml..."; \
-		. .venv/bin/activate && uv pip install -e .; \
+		. .venv/bin/activate; \
 		echo "Environment created and activated. Dependencies installed."; \
 	else \
 		echo "uv is not installed. Would you like to:"; \
