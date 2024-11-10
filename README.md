@@ -5,7 +5,7 @@ A modern, feature-rich starter template for building web applications with FastH
 ## Features
 
 - 🚀 Pre-configured FastHTML setup with hot-reload
-- 💅 TailwindCSS and Flowbite integration for modern styling
+- 💅 TailwindCSS and ft-frankenui itegration for modern styling
 - 📁 Clean and organized project structure
 - 🛠️ Automated tools for development workflow
 - 🔄 Automatic route collection system
@@ -35,7 +35,7 @@ This will:
 - Install all required dependencies
 - Set up the project for development
 
-5. Create your .env.example to include your prefered DATABASE_URL
+5. Create your .env based on .env.example to include your prefered DATABASE_URL
 
 6. Once in your virtual env start the project with:
 ```bash
@@ -174,21 +174,6 @@ The template includes a complete authentication system with the following featur
 - OTP (One-Time Password) support - emails are sent using Resend
 - Session management
 
-Example usage in a route:
-
-```python
-from app.services.auth import AuthService
-
-auth = AuthService()
-
-@rt("/login")
-async def post(request):
-    data = await request.json()
-    user = await auth.login(request, data["email"], data["password"])
-    if user:
-        return {"status": "success"}
-    return {"status": "error"}
-```
 
 ## Development Commands
 

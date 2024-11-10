@@ -10,6 +10,15 @@ def create_page(route):
     # Create directories if they don't exist
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
+    # Create __init__.py in each new directory if it doesn't exist
+    dir_path = os.path.dirname(file_path)
+    while dir_path and dir_path != "project/app/pages":
+        init_file = os.path.join(dir_path, "__init__.py")
+        if not os.path.exists(init_file):
+            with open(init_file, "w") as f:
+                f.write("")
+        dir_path = os.path.dirname(dir_path)
+
     # Check if file already exists
     if os.path.exists(file_path):
         print(f"Error: File already exists at {file_path}")
