@@ -1,29 +1,46 @@
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, create_engine
 from sqlalchemy import pool
+from sqlalchemy_utils import database_exists, create_database
 from sqlmodel import SQLModel
 from decouple import config as conf
 from alembic import context
+import os
 
-from project.app.models.auth.models import User
+# Import all models here so SQLModel can find them
+from app import models  # Make sure this imports all your models
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# this is the Alembic Config object
 config = context.config
 config.set_main_option("sqlalchemy.url", conf("DATABASE_URL"))
 
-print("DATABASE_URL", conf("DATABASE_URL"))
+# Set the database URL from environment
+database_url = conf("DATABASE_URL")
+print(f"Attempting to connect to: {database_url}")
+
+# Handle SQLite database creation
+if database_url.startswith('sqlite:///'):
+    db_path = database_url.replace('sqlite:///', '')
+    # Create directory if it doesn't exist
+    os.makedirs(os.path.dirname(os.path.abspath(db_path)), exist_ok=True)
+    # Touch the file to create it
+    if not os.path.exists(db_path):
+        open(db_path, 'a').close()
+        print(f"Created SQLite database file at: {db_path}")
+else:
+    # For other databases (PostgreSQL, MySQL, etc.)
+    engine = create_engine(database_url)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+        print("Database created successfully!")
+
+# Make sure all models are imported and metadata is loaded
+target_metadata = SQLModel.metadata
+
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = SQLModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

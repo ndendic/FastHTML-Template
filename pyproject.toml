@@ -14,6 +14,7 @@ dependencies = [
     "python-decouple>=3.8",
     "python-fasthtml>=0.8.0",
     "resend>=2.4.0",
+    "sqlalchemy-utils>=0.41.2",
     "sqlmodel>=0.0.22",
 ]
 

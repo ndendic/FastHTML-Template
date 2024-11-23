@@ -5,10 +5,10 @@
             "name": "Python: FastHTML",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/project/main.py",
+            "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "cwd": "${workspaceFolder}/project",
+            "cwd": "${workspaceFolder}",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}"
             }
