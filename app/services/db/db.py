@@ -153,6 +153,7 @@ def upsert_record(model: Type[SQLModel], data: Dict[str, Any]) -> SQLModel:
         if "id" in data:
             if isinstance(data["id"], str):
                 data["id"] = UUID(data["id"])
+            data.pop("created_at",None)
             db_record = session.get(model, data["id"])
             if db_record:
                 for key, value in data.items():
