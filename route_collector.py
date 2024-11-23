@@ -1,7 +1,7 @@
 import importlib
 import pkgutil
 
-import app.pages as pages
+import app.routes as routes
 from fasthtml.core import FastHTML
 
 
@@ -21,7 +21,7 @@ def collect_rt_instances(package):
     return rt_list
 
 
-routes = collect_rt_instances(pages)
+routes = collect_rt_instances(routes)
 
 
 def add_routes(app: FastHTML) -> FastHTML:

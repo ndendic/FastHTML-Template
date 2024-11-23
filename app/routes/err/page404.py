@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from app.pages.templates.template import page_template
+from app.routes.templates.template import page_template
 
 
 @page_template(title="404")

@@ -2,7 +2,7 @@ from fasthtml.common import *
 from fasthtml.core import APIRouter
 from app.services.auth.auth_service import AuthService
 from starlette.responses import RedirectResponse
-from app.pages.templates.template import page_template
+from app.routes.templates.template import page_template
 
 rt = APIRouter()
 auth_service = AuthService()
