@@ -3,7 +3,7 @@ import secrets
 
 # import modules
 from fasthtml.common import *
-from fh_frankenui.core import *
+from monsterui.core import *
 from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 

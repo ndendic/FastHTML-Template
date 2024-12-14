@@ -45,7 +45,7 @@ def reset_pass_page():
                         ),
                         Div(
                             Label(
-                                "I agree to supa_saas’s",
+                                "I agree to Web-App’s",
                                 A(
                                     "Terms of Use",
                                     href="#",

@@ -14,7 +14,7 @@ def app_navbar():
                             cls="mr-3 h-8",
                         ),
                         Span(
-                            "supa_saas",
+                            "Web-App",
                             cls="self-center text-2xl font-semibold whitespace-nowrap dark:text-white",
                         ),
                         href="https://flowbite.com",

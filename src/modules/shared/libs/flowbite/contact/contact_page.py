@@ -56,7 +56,7 @@ def contact_page():
                     Input(
                         type="email",
                         id="email",
-                        placeholder="name@supa_saas.com",
+                        placeholder="name@Web-App.com",
                         required="",
                         cls="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light",
                     ),
@@ -136,7 +136,7 @@ def contact_page():
                         cls="mb-3 text-gray-500 dark:text-gray-400",
                     ),
                     A(
-                        "hello@supa_saas.com",
+                        "hello@Web-App.com",
                         href="mailto:abc@example.com",
                         cls="font-semibold text-primary-600 dark:text-primary-500 hover:underline",
                     ),

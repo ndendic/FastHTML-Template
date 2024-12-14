@@ -1,6 +1,6 @@
 from fasthtml.common import *
-from fh_frankenui import *
-from fh_frankenui.core import *
+from monsterui import *
+from monsterui.core import *
 
 
 def MobileDrawer():
@@ -122,7 +122,7 @@ def Navbar():
                     MobileDrawer(),
                     # Logo
                     A(href="/", cls="flex items-center")(
-                        Span("SaaS", cls="font-bold text-xl")
+                        Span("app", cls="font-bold text-xl")
                     ),
                     # Desktop navigation
                     Nav(cls="hidden md:flex items-center space-x-8")(

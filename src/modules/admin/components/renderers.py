@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from datetime import datetime
-from fh_frankenui.core import *
+from monsterui.core import *
 
 
 class TableFieldRenderer:

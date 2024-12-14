@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from fasthtml.core import APIRouter
-from fh_frankenui import *
-from fh_frankenui.core import *
+from monsterui import *
+from monsterui.core import *
 
 from modules.shared.templates import page_template
 
@@ -210,7 +210,7 @@ def ComparisonSection():
 
 
 @rt("/pricing")
-@page_template(title="Pricing - SaaS Boilerplate")
+@page_template(title="Pricing - Web-App Boilerplate")
 def get(request):
     return Div(cls="py-24 sm:py-32")(
         PricingHeader(),

@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from fasthtml.core import APIRouter
-from fh_frankenui import *
-from fh_frankenui.core import *
+from monsterui import *
+from monsterui.core import *
 
 from modules.shared.templates import page_template
 
@@ -17,7 +17,7 @@ def CompanySection():
                     cls="text-4xl font-bold tracking-tight sm:text-6xl",
                 ),
                 P(
-                    "We're on a mission to help developers build better SaaS applications faster.",
+                    "We're on a mission to help developers build better Web-App applications faster.",
                     cls=TextFont.muted_lg + " mt-6",
                 ),
             ),
@@ -26,7 +26,7 @@ def CompanySection():
             )(
                 P(
                     "Founded in 2024, we've been helping developers and companies streamline their development process. "
-                    + "Our boilerplate is built on years of experience in building scalable SaaS applications.",
+                    + "Our boilerplate is built on years of experience in building scalable Web-App applications.",
                     cls=TextFont.muted_lg + " mb-6",
                 ),
                 P(
@@ -152,7 +152,7 @@ def ValuesSection():
 
 
 @rt("/about")
-@page_template(title="About Us - SaaS Boilerplate")
+@page_template(title="About Us - App Boilerplate")
 def get(request):
     return Div(CompanySection(), TeamSection(), ValuesSection())
 

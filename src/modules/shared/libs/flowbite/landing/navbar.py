@@ -52,7 +52,7 @@ def Navbar():
             Div(
                 # Logo/Brand (Left side)
                 A(
-                    H1("FastSaas", cls="text-xl font-bold"),
+                    H1("FastWeb-App", cls="text-xl font-bold"),
                     href="/",
                     cls="hover:opacity-75 transition-opacity"
                 ),

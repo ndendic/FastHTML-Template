@@ -1,5 +1,5 @@
 from fasthtml.common import *
-from fh_frankenui.core import *
+from monsterui.core import *
 from modules import *
 from modules.shared.validators import priviledged_component
 

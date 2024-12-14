@@ -5,7 +5,7 @@ import json
 from fasthtml.common import *
 from fasthtml.components import Uk_theme_switcher
 from fasthtml.svg import *
-from fh_frankenui.core import *
+from monsterui.core import *
 
 from modules.auth.models import User
 

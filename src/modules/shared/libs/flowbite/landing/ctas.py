@@ -10,7 +10,7 @@ def ctas():
                     cls="mb-4 text-4xl tracking-tight font-extrabold",
                 ),
                 P(
-                    "supa_saas helps you connect with friends, family and communities of people who share your interests. Connecting with your friends and family as well as discovering new ones is easy with features like Groups, Watch and Marketplace.",
+                    "Web-App helps you connect with friends, family and communities of people who share your interests. Connecting with your friends and family as well as discovering new ones is easy with features like Groups, Watch and Marketplace.",
                     cls="mb-8 font-light sm:text-xl",
                 ),
                 Div(

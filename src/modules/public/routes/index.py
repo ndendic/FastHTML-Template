@@ -1,8 +1,8 @@
 # app/pages/index.py
 from fasthtml.common import *
 from fasthtml.core import APIRouter
-from fh_frankenui import *
-from fh_frankenui.core import *
+from monsterui import *
+from monsterui.core import *
 
 from modules.shared.templates import page_template
 
@@ -13,11 +13,11 @@ def HeroSection():
     return Div(cls="py-24 px-6 lg:px-8 bg-background")(
         Div(cls="mx-auto max-w-3xl text-center")(
             H1(
-                "Build faster with our SaaS Boilerplate",
+                "Build faster with our App Boilerplate",
                 cls="text-4xl font-bold tracking-tight sm:text-6xl",
             ),
             P(
-                "Launch your SaaS project in minutes, not months. Everything you need to start building your next great idea.",
+                "Launch your Web-App project in minutes, not months. Everything you need to start building your next great idea.",
                 cls=TextFont.muted_lg + " mt-6",
             ),
             Div(cls="mt-10 flex items-center justify-center gap-x-6")(
@@ -52,7 +52,7 @@ def FeatureSection():
         (
             "layout",
             "Modern UI",
-            "Beautiful, responsive UI components powered by FrankenUI.",
+            "Beautiful, responsive UI components powered by MonsterUI.",
         ),
         (
             "code",
@@ -78,7 +78,7 @@ def FeatureSection():
                     cls="mt-2 text-3xl font-bold tracking-tight sm:text-4xl",
                 ),
                 P(
-                    "Our boilerplate includes everything you need to build a modern SaaS application.",
+                    "Our boilerplate includes everything you need to build a modern Web-App application.",
                     cls=TextFont.muted_lg + " mt-6",
                 ),
             ),
@@ -113,7 +113,7 @@ def CTASection():
                     cls="text-3xl font-bold tracking-tight text-white sm:text-4xl",
                 ),
                 P(
-                    "Start building your next great idea today with our complete SaaS boilerplate.",
+                    "Start building your next great idea today with our complete Web-App boilerplate.",
                     cls="mx-auto mt-6 max-w-xl text-lg leading-8 text-white/80",
                 ),
                 Div(cls="mt-10 flex items-center justify-center gap-x-6")(
@@ -130,6 +130,6 @@ def CTASection():
 
 
 @rt("/")
-@page_template(title="SaaS Boilerplate - Build Faster")
+@page_template(title="Web-App Boilerplate - Build Faster")
 def get(request):
     return Div(HeroSection(), FeatureSection(), CTASection())

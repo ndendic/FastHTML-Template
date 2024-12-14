@@ -5,12 +5,10 @@ A modern, feature-rich starter template for building web applications with FastH
 ## Features
 
 - 🚀 Pre-configured FastHTML setup with hot-reload
-- 💅 TailwindCSS and ft-frankenui itegration for modern styling
+- 💅 MonsterUI for modern styling
 - 📁 Clean and organized project structure
 - 🛠️ Automated tools for development workflow
 - 🔄 Automatic route collection system
-- 📄 Built-in page creation script
-- 🧪 Testing setup with pytest
 - 🗃️ Built-in FastHTML database support
 - 🔐 Complete authentication system
 
@@ -27,8 +25,10 @@ cd <your-repository-name>
 ```
 
 4. Initialize the development environment:
+This project uses ```uv``` as package manager. 
 ```bash
-make init
+uc sync
+uv pip install -e . # to use local cli
 ```
 This will:
 - Create a virtual environment using `uv` (or standard venv if uv is not installed)
@@ -39,7 +39,7 @@ This will:
 
 6. Once in your virtual env start the project with:
 ```bash
-make run
+fh run
 ```
 This will run example app on port 8000. You can change the port in main.py file.
 
@@ -48,24 +48,29 @@ This will run example app on port 8000. You can change the port in main.py file.
 
 ```
 project/
-├── app/                    # Application code
-│   ├── components/         # Reusable UI components
-│   ├── models/            # Data models
-│   ├── pages/             # Page routes and views
-│   ├── services/          # Business logic and services
-│   │   └── db/           # Database services
-│   ├── templates/         # Page templates
-│   └── utils/            # Utility functions
-├── config/                # Configuration files
-├── static/                # Static assets
-└── tests/                # Test files
+├── src/ # Application code
+│ ├── modules/ # Feature modules
+│ │ ├── admin/ # Admin module
+│ │ │ └── components/
+│ │ ├── auth/ # Authentication module
+│ │ │ ├── components/
+│ │ │ └── routes/
+│ │ ├── public/ # Public pages module
+│ │ │ ├── components/
+│ │ │ └── routes/
+│ │ └── shared/ # Shared code
+│ │ ├── libs/
+│ │ ├── templates/
+│ │ └── validators/
+│ └── assets/ # Static assets
+└── config/ # Configuration files
 ```
 
 ## Automatic Route Collection
 
-The template features an automatic route collection system that scans the `app/pages` directory and registers all routes automatically. Here's how it works:
+The template features an automatic route collection system that scans the modules for `rt` APIRouters and registers all routes automatically. Here's how it works:
 
-1. Create a new page in the `app/pages` directory:
+1. Create a new page in the under your module `src/modules/your_module` directory:
 ```python
 # app/pages/hello.py
 from fasthtml.common import *
@@ -80,29 +85,6 @@ def get(request):
 
 2. The route collector will automatically find and register this route - no manual registration needed!
 
-You can create new pages by using:
-```bash
-make new-page ROUTE=your/page/path
-```
-This will create the same folder route structure under project/app/pages with routes attached to get and post methods.
-
-```python
-from fasthtml.common import *
-from fasthtml.core import APIRouter
-
-rt = APIRouter()
-
-@rt("/your/page/path")
-def get(request):
-    return Titled("New Page", P("This is a new page"))
-
-@rt("/your/page/path")
-def post(request):
-    # Handle POST request
-    return {"message": "Received a POST request"}
-
-# Add other HTTP methods as needed
-```
 
 ## Database System
 
@@ -152,7 +134,7 @@ alembic revision --autogenerate -m "Add product table"
 ```
 or
 ```bash
-make migrations
+fh migrations
 ```
 
 
@@ -162,7 +144,7 @@ alembic upgrade head
 ```
 or
 ```bash
-make migrate
+fh migrate
 ```
 ## Authentication System
 
@@ -177,25 +159,15 @@ The template includes a complete authentication system with the following featur
 
 ## Development Commands
 
-The project includes a Makefile with various helpful commands:
+The project includes it's own mini CLI with various helpful commands:
 
 ### Basic Commands
 
-- `make run` - Start the FastHTML development server
-- `make test` - Run all tests
-- `make test-coverage` - Run tests with coverage report
+- `fh run` - Start the FastHTML development server
+- `fh migrations` - Create DB migrations
+- `fh migrate` - Migrates changes to db DB
 
 ### Page Management
-
-Create a new page with automatic routing:
-```bash
-make new-page ROUTE=path/to/your/page
-```
-
-### Environment Management
-
-- `make init` - Initialize development environment
-- `make clean` - Clean up cache and temporary files
 
 ## Future Plans
 

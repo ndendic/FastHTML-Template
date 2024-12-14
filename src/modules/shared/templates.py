@@ -1,7 +1,7 @@
 import json
 
 from fasthtml.common import *
-from fh_frankenui.core import *
+from monsterui.core import *
 from starlette.responses import RedirectResponse
 
 from modules.admin.components.navbar import TopNav
@@ -25,7 +25,7 @@ def site_page(title, content):
     )
 
 
-def page_template(title="FastSaas"):
+def page_template(title="FastWeb-App"):
     def decorator(func):
         def wrapper(request, *args, **kwargs):
             content = func(request)

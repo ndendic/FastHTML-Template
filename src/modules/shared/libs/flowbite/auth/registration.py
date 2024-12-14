@@ -135,7 +135,7 @@ def registration_page():
                             ),
                             Div(
                                 Label(
-                                    "By signing up, you are creating a supa_saas account, and you agree to supa_saas's",
+                                    "By signing up, you are creating a Web-App account, and you agree to Web-App's",
                                     A(
                                         "Terms of Use",
                                         href="#",

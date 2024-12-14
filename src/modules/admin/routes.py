@@ -3,8 +3,8 @@ from typing import Type
 from fasthtml.common import *
 from fasthtml.core import APIRouter
 from fasthtml.svg import *
-from fh_frankenui import *
-from fh_frankenui.core import *
+from monsterui import *
+from monsterui.core import *
 
 from modules.shared.models import BaseTable
 from modules.shared.templates import app_page, app_template, is_htmx
@@ -55,13 +55,13 @@ recent_sales = Card(
 
 
 # %% ../example_dashboard.ipynb
-teams = [["Alicia Koch"], ["Acme Inc", "Monster Inc."], ["Create a Team"]]
+teams = [["Alicia Koch"], ["Web-App Inc", "Monster Inc."], ["Create a Team"]]
 
 opt_hdrs = ["Personal", "Team", ""]
 
 team_dropdown = UkSelect(
     Optgroup(label="Personal Account")(Option(A("Alicia Koch"))),
-    Optgroup(label="Teams")(Option(A("Acme Inc")), Option(A("Monster Inc."))),
+    Optgroup(label="Teams")(Option(A("Web-App Inc")), Option(A("Monster Inc."))),
     Option(A("Create a Team")),
 )
 

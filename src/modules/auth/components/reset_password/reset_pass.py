@@ -1,12 +1,12 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from fh_frankenui.core import *
+from monsterui.core import *
 
 def reset_pass_page():
     left = Div(
         cls="col-span-1 hidden flex-col justify-between bg-zinc-900 p-8 text-white lg:flex"
     )(
-        Div(cls=(TextT.bold, TextT.default))("Acme Inc"),
+        Div(cls=(TextT.bold, TextT.default))("Web-App Inc"),
         Blockquote(cls="space-y-2")(
             P(cls=TextT.large)(
                 '"A strong password is random, long, and unique. Never reuse passwords across multiple accounts."'

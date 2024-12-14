@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from fasthtml.svg import *
-from fh_frankenui.core import *
-from fh_frankenui.foundations import stringify
+from monsterui.core import *
+from monsterui.foundations import stringify
 
 from modules.admin.components.pagination import Pagination
 
