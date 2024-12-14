@@ -3,15 +3,30 @@
     "configurations": [
         {
             "name": "Python: FastHTML",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/main.py",
+            "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
             "justMyCode": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/src",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}"
-            }
+                "PYTHONPATH": "${workspaceFolder}",
+            },
+        },
+        {
+            "name": "Python: Cursor",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1"
+            },
+            "args": [
+                "-Xfrozen_modules=off"
+            ]
         }
     ]
 }
