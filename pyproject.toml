@@ -3,7 +3,7 @@ name = "FastHTML-Project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = [
     "alembic>=1.13.3",
     "bcrypt>=4.2.0",
