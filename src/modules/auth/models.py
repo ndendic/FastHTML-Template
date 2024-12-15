@@ -4,9 +4,13 @@ from typing import Any, Dict, List, Optional
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSON
 from sqlmodel import Field, Relationship
-
 # from dataclasses import dataclass, field
 from modules.shared.models import BaseTable
+
+
+class DemoUser(BaseTable, table=True):
+    name: str = Field(nullable=False)
+    email: str = Field(nullable=False, unique=True)
 
 
 class RolePriviledge(BaseTable, table=True):

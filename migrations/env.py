@@ -5,15 +5,17 @@ from decouple import config as conf
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
-from modules.auth.models import Priviledge, Role, RolePriviledge, User
 from modules.shared.models import BaseTable
+import pkgutil
+import importlib
+from pathlib import Path
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 config.set_main_option("sqlalchemy.url", conf("DATABASE_URL"))
 
-print("DATABASE_URL", conf("DATABASE_URL"))
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
